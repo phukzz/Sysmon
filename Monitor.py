@@ -1,9 +1,12 @@
 import psutil
 import time
+from prettytable import PrettyTable
 
 _init = psutil.net_io_counters()
 prev_recv = _init.bytes_recv
 prev_sent = _init.bytes_sent
+table = PrettyTable()
+table.field_names = ['ID','System Information','Percentage','Capacity','Recv','Sent']
 
 while True:
     a = psutil.cpu_percent(interval=None, percpu=False)
@@ -17,5 +20,13 @@ while True:
     prev_recv = d.bytes_recv
     prev_sent = d.bytes_sent
 
-    print(f"TIME: {(Time)} | CPU: {a}% | MEM: {round((b.used/(1024**3)),2)}/{round((b.total/(1024**3)),2)} GB, {b.percent}% | DISK: {c.percent}%, {round(c.used/(1024**3))}/{round(c.total/(1024**3))} GB | NETWORK: {e} KB/s, {f} KB/s")
+    table.clear_rows()
+    table.add_row(['1','CPU',f"{a}%","N/A","N/A","N/A"])
+    table.add_row(['2','MEMORY',f"{b.percent}%" ,f"{round((b.used/(1024**3)),2)}/{round((b.total/(1024**3)),2)} GB","N/A","N/A"])
+    table.add_row(['3','DISK',f"{c.percent}%",f"{round(c.used/(1024**3))}/{round(c.total/(1024**3))} GB","N/A","N/A"])
+    table.add_row(['4','NETWORK',"N/A","N/A",f"{e} KB/s",f"{f} KB/s"])
+
+    print(f"TIME: {(Time)}")
+    print(table)
+    # print(f"TIME: {(Time)} | CPU: {a}% | MEM: {round((b.used/(1024**3)),2)}/{round((b.total/(1024**3)),2)} GB, {b.percent}% | DISK: {c.percent}%, {round(c.used/(1024**3))}/{round(c.total/(1024**3))} GB | NETWORK: {e} KB/s, {f} KB/s")
     time.sleep(5)
