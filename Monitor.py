@@ -28,5 +28,4 @@ while True:
 
     print(f"TIME: {(Time)}")
     print(table)
-    # print(f"TIME: {(Time)} | CPU: {a}% | MEM: {round((b.used/(1024**3)),2)}/{round((b.total/(1024**3)),2)} GB, {b.percent}% | DISK: {c.percent}%, {round(c.used/(1024**3))}/{round(c.total/(1024**3))} GB | NETWORK: {e} KB/s, {f} KB/s")
     time.sleep(5)
