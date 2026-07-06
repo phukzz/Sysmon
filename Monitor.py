@@ -1,9 +1,5 @@
 import psutil
 import time
-from prettytable import PrettyTable
-
-table = PrettyTable()
-table.field_names = ['ID','System Information','Percentage','Capacity','Recv','Sent']
 
 _init = psutil.net_io_counters()
 prev_recv = _init.bytes_recv
@@ -34,11 +30,4 @@ def collect():
 
 while True:
     print(collect())
-    # table.clear_rows()
-    # table.add_row(['1','CPU',f"{a}%","N/A","N/A","N/A"])
-    # table.add_row(['2','MEMORY',f"{b.percent}%" ,f"{round((b.used/(1024**3)),2)}/{round((b.total/(1024**3)),2)} GB","N/A","N/A"])
-    # table.add_row(['3','DISK',f"{c.percent}%",f"{round(c.used/(1024**3))}/{round(c.total/(1024**3))} GB","N/A","N/A"])
-    # table.add_row(['4','NETWORK',"N/A","N/A",f"{e} KB/s",f"{f} KB/s"])
-    # print(f"TIME: {(Time)}")
-    # print(table)
     time.sleep(5)
