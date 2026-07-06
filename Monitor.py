@@ -20,9 +20,11 @@ def collect():
         "TimeStamp": Time,
         "CPU_Percent": a,
         "MEM_Percent": b.percent,
-        "MEM_Total": round((b.used/(1024**3)),2)/round((b.total/(1024**3)),2),
+        "MEM_USED": round((b.used/(1024**3)),2),
+        "MEM_Total": round((b.total/(1024**3)),2),
         "DISK_Percent": c.percent,
-        "DISK_Total": round(c.used/(1024**3))/round(c.total/(1024**3)),
+        "DISK_USED": round(c.used/(1024**3),2),
+        "DISK_Total": round(c.total/(1024**3),2),
         "NETWORK_Recv": round(e,2),
         "NETWORK_Sent": round(f,2)
     }
