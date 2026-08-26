@@ -13,7 +13,8 @@ def collect():
     b = psutil.virtual_memory()
     c = psutil.disk_usage("/") # disk_usage("/") returns the disk usage statistics for the root directory ("/"). Using ("/") as the argument ensures that the function retrieves information about the primary storage device, which is typically where the operating system and most applications are installed.
     d = psutil.net_io_counters(nowrap=False) # net_io_counters() with nowrap=False means that the values will not reset to zero when they reach their maximum value, important for accurately tracking network activity over time.
-    Time = time.strftime(" %d/%m/%Y %H:%M:%S")
+    Time = int(time.time()) # getting timestamps as integer for SQLite then convert it into readable format.
+
     e = (d.bytes_recv - prev_recv)/1024/5
     f = (d.bytes_sent - prev_sent)/1024/5
     prev_recv = d.bytes_recv
@@ -22,7 +23,7 @@ def collect():
         "TimeStamp": Time,
         "CPU_Percent": a,
         "MEM_Percent": b.percent,
-        "MEM_USED": round((b.used/(1024**3)),2),
+        "MEM_Used": round((b.used/(1024**3)),2),
         "MEM_Total": round((b.total/(1024**3)),2),
         "DISK_Percent": c.percent,
         "DISK_USED": round(c.used/(1024**3),2),
