@@ -26,7 +26,7 @@ def collect():
         "MEM_Used": round((b.used/(1024**3)),2),
         "MEM_Total": round((b.total/(1024**3)),2),
         "DISK_Percent": c.percent,
-        "DISK_USED": round(c.used/(1024**3),2),
+        "DISK_Used": round(c.used/(1024**3),2),
         "DISK_Total": round(c.total/(1024**3),2),
         "NETWORK_Recv": round(e,2),
         "NETWORK_Sent": round(f,2)
