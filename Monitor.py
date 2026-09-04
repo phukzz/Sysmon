@@ -1,5 +1,6 @@
 import psutil
 import time
+import Database as db
 
 _init = psutil.net_io_counters()
 prev_recv = _init.bytes_recv
@@ -34,5 +35,7 @@ def collect():
     return Data
 
 while True:
-    print(collect())
+    data = collect()
+    print(data)
+    db.insert_metrics(data)
     time.sleep(5) # The while loop continuously calls the collect() function every 5 seconds.
