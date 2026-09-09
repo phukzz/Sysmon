@@ -52,3 +52,14 @@ def insert_metrics(Data):
     conn.commit()
     conn.close()
 
+def get_recent():
+    conn, cur = init_db()
+
+    cur.execute('SELECT * FROM metrics ORDER BY Timestamp DESC LIMIT 60')
+    res = cur.fetchall()
+
+    desc = cur.description
+    columns = [col[0] for col in desc]
+    result = [dict(zip(columns, row)) for row in res]
+    conn.close()
+    return result
