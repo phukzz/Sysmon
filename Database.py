@@ -1,4 +1,5 @@
 import sqlite3
+import time
 
 def init_db():
     conn = sqlite3.connect('system_metrics.db')
@@ -55,7 +56,7 @@ def insert_metrics(Data):
 def get_recent():
     conn, cur = init_db()
 
-    cur.execute('SELECT * FROM metrics ORDER BY Timestamp DESC LIMIT 60')
+    cur.execute('SELECT * FROM metrics ORDER BY TimeStamp DESC LIMIT 60')
     res = cur.fetchall()
 
     desc = cur.description
