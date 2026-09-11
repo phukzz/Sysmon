@@ -25,33 +25,37 @@ def init_db():
 init_db()
 
 def insert_metrics(Data):
-    conn, cur = init_db()
-    cur.execute('''
-        INSERT INTO metrics (
-            TimeStamp, 
-            CPU_Percent, 
-            MEM_Percent, 
-            MEM_Used, 
-            MEM_Total, 
-            DISK_Percent, 
-            DISK_Used, 
-            DISK_Total, 
-            NETWORK_Recv, 
-            NETWORK_Sent
-        ) VALUES (
-            :TimeStamp, 
-            :CPU_Percent, 
-            :MEM_Percent, 
-            :MEM_Used, 
-            :MEM_Total, 
-            :DISK_Percent, 
-            :DISK_Used, 
-            :DISK_Total, 
-            :NETWORK_Recv, 
-            :NETWORK_Sent)
-    ''', Data)
-    conn.commit()
-    conn.close()
+    try: 
+        conn, cur = init_db()
+        cur.execute('''
+            INSERT INTO metrics (
+                TimeStamp, 
+                CPU_Percent, 
+                MEM_Percent, 
+                MEM_Used, 
+                MEM_Total, 
+                DISK_Percent, 
+                DISK_Used, 
+                DISK_Total, 
+                NETWORK_Recv, 
+                NETWORK_Sent
+            ) VALUES (
+                :TimeStamp, 
+                :CPU_Percent, 
+                :MEM_Percent, 
+                :MEM_Used, 
+                :MEM_Total, 
+                :DISK_Percent, 
+                :DISK_Used, 
+                :DISK_Total, 
+                :NETWORK_Recv, 
+                :NETWORK_Sent) 
+            ''', Data)
+    except Exception as e:
+        print(f"Error inserting metrics: {e}")
+    finally:
+        conn.commit()
+        conn.close()
 
 def get_recent():
     conn, cur = init_db()
