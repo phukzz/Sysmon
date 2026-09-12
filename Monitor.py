@@ -38,12 +38,13 @@ def collect():
         print(f"Error collecting metrics: {e}")
         return None # Return None to indicate that the metrics collection failed.
 
-while True:
-    data = collect()
-    if data is None: # Check if collect() returned None. If yes, it means there was an error then it will wait for 5 seconds before retrying to collect the metrics. It counts the error as an attempt to collect metrics and retry to collect metrics after 5 seconds. 
-        print("Failed to collect metrics. Retrying in 5 seconds...")
-        time.sleep(5)
-    else: # If collect() successfully returns a dictionary of metrics, it will print the collected data and then call the insert_metrics() function from the Database module to store the metrics in the database.
-        print(data)
-        db.insert_metrics(data)
-        time.sleep(5) # The while loop continuously calls the collect() function every 5 seconds.
+if __name__ == '__main__':
+    while True:
+        data = collect()
+        if data is None: # Check if collect() returned None. If yes, it means there was an error then it will wait for 5 seconds before retrying to collect the metrics. It counts the error as an attempt to collect metrics and retry to collect metrics after 5 seconds. 
+            print("Failed to collect metrics. Retrying in 5 seconds...")
+            time.sleep(5)
+        else: # If collect() successfully returns a dictionary of metrics, it will print the collected data and then call the insert_metrics() function from the Database module to store the metrics in the database.
+            print(data)
+            db.insert_metrics(data)
+            time.sleep(5) # The while loop continuously calls the collect() function every 5 seconds.
