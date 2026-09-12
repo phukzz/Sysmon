@@ -25,7 +25,7 @@ def init_db():
 init_db()
 
 def insert_metrics(Data):
-    try: 
+    try: # Wrap insert_metrics() function in a try-except block. If an error occurs during the insertion of metrics into the database, it continue without crashing the program.
         conn, cur = init_db()
         cur.execute('''
             INSERT INTO metrics (
@@ -51,9 +51,9 @@ def insert_metrics(Data):
                 :NETWORK_Recv, 
                 :NETWORK_Sent) 
             ''', Data)
-    except Exception as e:
+    except Exception as e: # What happens if an error occurs during the execution of the insert_metrics() function, print out the error message and continue without crashing the program.
         print(f"Error inserting metrics: {e}")
-    finally:
+    finally: # Finally block ensures that if there is an error or not, the function will always commit the changes to the database and close the connection to prevent resource leaks and ensure that the database remains in a consistent state.
         conn.commit()
         conn.close()
 

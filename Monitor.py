@@ -9,7 +9,7 @@ prev_sent = _init.bytes_sent
 
 # Colect() is a function that collects various system metrics such as CPU usage, memory usage, disk usage, and network I/O statistics. It returns a dictionary containing these metrics along with a timestamp. Making a collect() function allows for easy retrieval of system performance data at regular intervals, which can be useful for monitoring and analysis purposes.
 def collect():
-    try:    
+    try: # Wrap collect() function in a try-except block to handle error of not being able to collect metrics. if an error occurs, it will return None and continue the program without crashing.
         global prev_recv, prev_sent # Colect() function uses the global variables prev_recv and prev_sent to keep track of the previous network I/O counters. This allows the function to calculate the amount of data received and sent since the last call to collect().
         a = psutil.cpu_percent(interval=None, percpu=False) #cpu_percent() with interval=None returns the current system-wide CPU utilization as a percentage without blocking. The percpu=False argument indicates that the function should return a single value representing the overall CPU usage rather than individual values for each CPU core.
         b = psutil.virtual_memory()
@@ -34,16 +34,16 @@ def collect():
             "NETWORK_Sent": round(f,2)
         }
         return Data
-    except Exception as e:
+    except Exception as e: # What happens if an error occurs during the execution of the collect() function, print out the error message and return None so collect() can continue without crashing the program.
         print(f"Error collecting metrics: {e}")
-        return None 
+        return None # Return None to indicate that the metrics collection failed.
 
 while True:
     data = collect()
-    if data is None:
+    if data is None: # Check if collect() returned None. If yes, it means there was an error then it will wait for 5 seconds before retrying to collect the metrics. It counts the error as an attempt to collect metrics and retry to collect metrics after 5 seconds. 
         print("Failed to collect metrics. Retrying in 5 seconds...")
         time.sleep(5)
-    else:
+    else: # If collect() successfully returns a dictionary of metrics, it will print the collected data and then call the insert_metrics() function from the Database module to store the metrics in the database.
         print(data)
         db.insert_metrics(data)
         time.sleep(5) # The while loop continuously calls the collect() function every 5 seconds.
