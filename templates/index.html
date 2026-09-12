@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>  
+    <head>
+        <title>System Monitoring Application</title>
+    </head>
+    <body>
+        <div>
+            <h1><b>Welcome to the System Monitoring Application!</b></h1>
+            <p>This application collects and displays system metrics such as CPU usage, memory usage, disk usage, and network I/O statistics. The metrics are collected every 5 seconds and stored in a database for analysis.</p>
+            <p>Right below, you can view the real-time metrics for your system.</p>
+            <p id="CPU_Percent"> CPU Usage: </p>
+            <p id="MEMORY_Percent"> Memory Usage: </p>
+            <p id="DISK_Percent"> Disk Usage: </p>
+            <p id="NETWORK_Recv"> Network Receive: </p>
+            <p id="NETWORK_Sent"> Network Sent: </p>
+        </div>
+    <script>
+        async function get_data() {
+            try {
+                const response = await fetch('/api/current')
+                if (!response.ok) {
+                    throw new Error(`Response Status: ${response.status}`)
+                }
+                const data = await response.json()
+                console.log(data)
+                document.getElementById("CPU_Percent").innerHTML = "CPU USAGE: " + data.CPU_Percent + "%"
+                document.getElementById("MEMORY_Percent").innerHTML = "Memory Usage: " + data.MEM_Percent + "%" 
+                document.getElementById("DISK_Percent").innerHTML = "Disk Usage: " + data.DISK_Percent + "%" 
+                document.getElementById("NETWORK_Recv").innerHTML = "Network Receive: " + data.NETWORK_Recv + "KB/s"
+                document.getElementById("NETWORK_Sent").innerHTML = "Network Sent: " + data.NETWORK_Sent + "KB/s"
+            } catch (error) {
+                console.error(error.message)
+            }
+        }
+        get_data()
+        setInterval(get_data,5000)
+    </script>
+    </body>
+</html>
