@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, render_template
-from Monitor import collect
 from Database import get_recent
 
 app = Flask(__name__)
@@ -10,10 +9,11 @@ def index():
 
 @app.route('/api/current')
 def collect_metrics():
-    data = collect()
-    if data is None:
-        return jsonify({"Error": "Failed to collect metrics"}), 500
-    return jsonify(data)
+    data = get_recent()
+    if len(data) == 0:
+        return jsonify({"Error": "No content"}), 204
+    else:
+        return jsonify(data[0])
 
 @app.route('/api/history')
 def get_history():
