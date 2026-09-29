@@ -3,6 +3,7 @@
     <head>
         <title>System Monitoring Application</title>
     </head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.js"></script>
     <body>
         <div>
             <h1><b>Welcome to the System Monitoring Application!</b></h1>
@@ -13,6 +14,7 @@
             <p id="DISK_Percent"> Disk Usage: </p>
             <p id="NETWORK_Recv"> Network Receive: </p>
             <p id="NETWORK_Sent"> Network Sent: </p>
+            <canvas id="myChart" style="width: 100%; max-width: 700px;border-color: black;border-radius: 10px;"></canvas>
         </div>
     <script>
         async function get_data() {
@@ -20,6 +22,9 @@
                 const response = await fetch('/api/current')
                 if (!response.ok) {
                     throw new Error(`Response Status: ${response.status}`)
+                }
+                else if (response.status === 204) {
+                    throw new Error(`Response body: ${response.status}`)
                 }
                 const data = await response.json()
                 console.log(data)
@@ -32,8 +37,77 @@
                 console.error(error.message)
             }
         }
+        
+        async function recent_data() {
+            const result = await fetch('/api/history')
+            if (!result.ok) {
+                throw new Error(`Result Status: ${result.status}`)
+            }
+            const info = await result.json()
+            const CPU_array = info.map(({TimeStamp, CPU_Percent, MEM_Percent, MEM_Used, MEM_Total, DISK_Percent, DISK_Used, DISK_Total, NETWORK_Recv, NETWORK_Sent}) => (CPU_Percent))
+            const TimeStamp_array = info.map(({TimeStamp, CPU_Percent, MEM_Percent, MEM_Used, MEM_Total, DISK_Percent, DISK_Used, DISK_Total, NETWORK_Recv, NETWORK_Sent}) => (TimeStamp))
+            const milliseconds = TimeStamp_array.map(function(x) {return x*1000})
+            const date = milliseconds.map(function(x) {return new Date(x).toLocaleTimeString()})
+            const time = date.reverse()
+            const reverse = CPU_array.reverse()
+    
+            const ctx = document.getElementById("myChart")
+            myChartInstance = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: time,
+                datasets:[{
+                    label: 'CPU_Usage',
+                    fill: false,
+                    tension: 0,
+                    backgroundColor: "rgba(0,0,255,1.0)",
+                    borderColor: "rgba(0,0,255,0.1)",
+                    data: reverse
+                }]
+            },
+            options:{
+                plugins: {
+                    legend: {display:false},
+                    title: {
+                        display: true,
+                        text: "Result of recent scans",
+                        font: {size:16}
+                        }
+                    }
+                }
+            })
+        }
+
+        async function addData() {
+            if (myChartInstance === null) {
+                return 
+            }
+            try {
+                const result = await fetch('/api/history')
+                if (!result.ok) {
+                    throw new Error(`Result Status: ${result.status}`)
+                }
+
+                const info = await result.json()
+                const CPU_array = info.map(({TimeStamp, CPU_Percent, MEM_Percent, MEM_Used, MEM_Total, DISK_Percent, DISK_Used, DISK_Total, NETWORK_Recv, NETWORK_Sent}) => (CPU_Percent))
+                const TimeStamp_array = info.map(({TimeStamp, CPU_Percent, MEM_Percent, MEM_Used, MEM_Total, DISK_Percent, DISK_Used, DISK_Total, NETWORK_Recv, NETWORK_Sent}) => (TimeStamp))
+                const milliseconds = TimeStamp_array.map(function(x) {return x*1000})
+                const date = milliseconds.map(function(x) {return new Date(x).toLocaleTimeString()})
+                const time = date.reverse()
+                const reverse = CPU_array.reverse()
+                myChartInstance.data.labels = time
+                myChartInstance.data.datasets[0].data = reverse
+                myChartInstance.update()
+            } catch(e) {
+                console.error(e.message)
+            }
+        }
+
+        let myChartInstance = null;
         get_data()
-        setInterval(get_data,5000)
+        recent_data()
+        setInterval(get_data,5000) 
+        setInterval(addData, 5000)              
     </script>
     </body>
 </html>
