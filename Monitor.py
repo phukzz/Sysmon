@@ -48,16 +48,8 @@ if __name__ == '__main__':
         else: # If collect() successfully returns a dictionary of metrics, it will print the collected data and then call the insert_metrics() function from the Database module to store the metrics in the database.
             print(data)
             db.insert_metrics(data)
-            alert = st.check_alerts()
-            if alert is None:
-                print("No data in the database")
-            else: 
-                if alert == 2:
-                    print("Warming up")
-                elif alert == 3:
-                    print("Data gap detected")
-                elif alert ==  1:
-                    print("High CPU usage detected")
-                elif alert == 0:
-                    print("All systems stable")
+            try:
+                print(st.check_alerts()["message"])
+            except Exception as e:
+                print(f"Error occurred while checking alerts: {e}")
             time.sleep(5) # The while loop continuously calls the collect() function every 5 seconds.
