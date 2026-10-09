@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, render_template
 from Database import get_recent
+from Status import check_alerts
 
 app = Flask(__name__)
 
@@ -19,5 +20,13 @@ def collect_metrics():
 def get_history():
     recent_data = get_recent()
     return jsonify(recent_data)
+
+@app.route('/api/status')
+def get_status():
+    try:
+        status = check_alerts()
+        return jsonify(status) 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500 
 
 app.run(debug=True)
